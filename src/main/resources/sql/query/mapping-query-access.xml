@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryservice xmlns="http://www.anyframejava.org/schema/query/mapping" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.anyframejava.org/schema/query/mapping http://www.anyframejava.org/schema/query/mapping/anyframe-query-mapping-1.0.xsd ">
+
+	<queries>
+		<query id="findCalendarAuthKeyByPk">
+			<statement>
+SELECT * FROM DAUM_CALENDAR WHERE USER_ID = :vo.userId
+			</statement>
+			<result class="com.john_na.common.entity.DaumAPIVo" />
+		</query>
+		
+		<query id="removeCalendarAuthKey">
+			<statement>
+DELETE FROM DAUM_CALENDAR WHERE USER_ID = :vo.userId
+			</statement>
+		</query>
+		
+		<query id="updateProfile">
+			<statement>
+merge into daum_profile
+		using dual
+	on (user_id = :vo.userId)
+when matched then
+	update set ACCESS_TOKEN = :vo.accessToken,
+	           TOKEN_SECRET = :vo.tokenSecret
+when not matched then
+	insert (user_id, ACCESS_TOKEN, TOKEN_SECRET)
+	values (:vo.userId, :vo.accessToken, :vo.tokenSecret)			
+			</statement>
+		</query>
+		
+		<query id="updateCalendar">
+			<statement>
+merge into daum_calendar
+		using dual
+	on (user_id = :vo.userId)
+when matched then
+	update set ACCESS_TOKEN = :vo.accessToken,
+	           TOKEN_SECRET = :vo.tokenSecret
+when not matched then
+	insert (user_id, ACCESS_TOKEN, TOKEN_SECRET)
+	values (:vo.userId, :vo.accessToken, :vo.tokenSecret)			
+			</statement>
+		</query>
+	</queries>
+</queryservice>
+

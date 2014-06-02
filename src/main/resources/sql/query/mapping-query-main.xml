@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryservice xmlns="http://www.anyframejava.org/schema/query/mapping" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.anyframejava.org/schema/query/mapping http://www.anyframejava.org/schema/query/mapping/anyframe-query-mapping-1.0.xsd ">
+
+	<queries>
+		<query id="findRecordInProgressByPk">
+			<statement>
+SELECT USER_ID, 
+      TO_CHAR(START_TIME, 'yyyy-mm-dd')||'T'||TO_CHAR(START_TIME, 'HH24:MM:SS') START_TIME,
+      TO_CHAR(SYSDATE, 'yyyy-mm-dd')||'T'||TO_CHAR(SYSDATE, 'HH24:MM:SS') END_TIME,
+      CATEGORY_ID, CATEGORY_NAME,
+      TITLE, DESCRIPTION, LOCATION
+FROM RECORD_IN_PROGRESS
+WHERE USER_ID = :vo.userId
+			</statement>
+			<result class="com.john_na.common.entity.RecordInProgressVo" />
+		</query>
+	
+		<query id="createRecordInProgress">
+			<statement>
+insert into RECORD_IN_PROGRESS
+	(USER_ID, CATEGORY_ID, CATEGORY_NAME, START_TIME)
+values
+	(:vo.userId, :vo.categoryId, :vo.categoryName, sysdate)
+			</statement>
+		</query>
+		
+		<query id="updateRecordInProgress">
+			<statement>
+update RECORD_IN_PROGRESS
+set TITLE = :vo.title,
+    DESCRIPTION = :vo.description,
+    LOCATION = :vo.location
+WHERE USER_ID = :vo.userId
+			</statement>
+		</query>
+		
+		<query id="removeRecordInProgress">
+			<statement>
+delete FROM RECORD_IN_PROGRESS WHERE USER_ID = :vo.userId
+			</statement>
+		</query>
+	</queries>
+</queryservice>
+
