@@ -1,4 +1,5 @@
 .project
 .settings
 .classpath
-context.propertiese
+**/context.propertiese
+**/daum-api-key.properties
