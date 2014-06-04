@@ -15,3 +15,10 @@
 TODO
 -------------
 - 세션 관리
+
+사용법
+-------------
+각 서버 설정에 맞게 properties를 설정해야함.
+src/main/resources 밑에
+context.propertes
+daum-api-key.properties

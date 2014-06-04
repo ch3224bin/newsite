@@ -1,13 +1,7 @@
 package com.john_na.common.api;
 
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.OAuthProvider;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.anyframe.util.ThreadLocalUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -16,48 +10,36 @@ import com.john_na.common.entity.DaumApiReturnVo;
 import com.john_na.common.entity.DaumProfileVo;
 
 @Service
-public class DaumProfileService extends DaumApi {
+public class DaumProfileService {
 	private final Gson gson = new Gson();
+	private final AuthHttp authHttp = new AuthHttp();
 	
-	private final String CALLBACK_URL = "http://localhost:8080/authCal.do";
-	private final String API_URL = "https://apis.daum.net/calendar";
+	@Value("#{api['PROFILE_CALLBACK_URL']}")
+	private String callbackUrl;
 	
-//	@Autowired
-//	public DaumProfileService(@Value("#{api['PROFILE_CONSUMER_KEY']}") String consumerKey, @Value("#{api['PROFILE_CONSUMER_SECRET_KEY']}") String consumerSecretKey) { 
-//		super(consumerKey, consumerSecretKey);
-//	}
-	
-	DaumProfileService() {}
-	
-	@Autowired
-	public DaumProfileService(OAuthProvider provider, OAuthConsumer consumer) { 
-		super(provider, consumer);
-	}
+	@Value("#{api['PROFILE_API_URL']}")
+	private String apiUrl;
 	
 	public String requestToken() throws Exception {
-		return super.requestToken(CALLBACK_URL);
+		DaumApi profileApi = (DaumApi) ThreadLocalUtil.get("profileApi");
+		return profileApi.requestToken(callbackUrl);
 	}
 	
 	public DaumProfileVo getProfile() throws Exception {
-		setTokenWithSecret(getConsumer().getToken(), getConsumer().getTokenSecret());
+		DaumApi profileApi = (DaumApi) ThreadLocalUtil.get("profileApi");
 		
-		URL url = new URL(API_URL);		
-		HttpURLConnection request = (HttpURLConnection) url.openConnection();
-
-		// request를 서명합니다.
-		getConsumer().sign(request);		
-
-		request.connect();
-		
-        DaumApiReturnVo vo = gson.fromJson(new InputStreamReader(request.getInputStream()), DaumApiReturnVo.class);
+        String result = authHttp.getHttpGet(apiUrl, profileApi.getConsumer());
+		DaumApiReturnVo vo = gson.fromJson(result, DaumApiReturnVo.class);
 		
 		return vo.getUser();
 	}
 
 	public DaumAPIVo createProfileApiVo() {
+		DaumApi profileApi = (DaumApi) ThreadLocalUtil.get("profileApi");
+		
         DaumAPIVo daumProfileApiVo = new DaumAPIVo();
-        daumProfileApiVo.setAccessToken(getConsumer().getToken());
-        daumProfileApiVo.setTokenSecret(getConsumer().getTokenSecret());
+        daumProfileApiVo.setAccessToken(profileApi.getConsumer().getToken());
+        daumProfileApiVo.setTokenSecret(profileApi.getConsumer().getTokenSecret());
 		return daumProfileApiVo;
 	}
 }

@@ -1,33 +1,31 @@
 package com.john_na.common.api;
 
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.OAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 
 public class DaumApi {
-//	static final String REQUEST_TOKEN_URL = "https://apis.daum.net/oauth/requestToken";
-//	static final String AUTHORIZE_URL = "https://apis.daum.net/oauth/authorize";
-//	static final String ACCESS_TOKEN_URL = "https://apis.daum.net/oauth/accessToken";
+	
+	private static final String REQUEST_TOKEN_URL = DaumApiBundle.getValue("REQUEST_TOKEN_URL");
+	private static final String ACCESS_TOKEN_URL = DaumApiBundle.getValue("ACCESS_TOKEN_URL");
+	private static final String AUTHORIZE_URL = DaumApiBundle.getValue("AUTHORIZE_URL");
 	
 	// Service Provider 객체 생성
-	private  OAuthProvider provider;
+	private CommonsHttpOAuthProvider provider;
 
 	// Consumer 객체 생성
-	private  OAuthConsumer consumer;
+	private CommonsHttpOAuthConsumer consumer;
 	
-//	public DaumApi(String consumerKey, String consumerSecretKey) {
-//		provider = new CommonsHttpOAuthProvider(REQUEST_TOKEN_URL, ACCESS_TOKEN_URL, AUTHORIZE_URL);
-//		consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecretKey);
-//	}
-	
-	DaumApi() {}
-	
-	public DaumApi(OAuthProvider provider, OAuthConsumer consumer) {
-		this.provider = provider;
-		this.consumer = consumer;
+	public DaumApi(String consumerKey, String consumerSecretKey) {
+		provider = new CommonsHttpOAuthProvider(REQUEST_TOKEN_URL, ACCESS_TOKEN_URL, AUTHORIZE_URL);
+		consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecretKey);
 	}
 	
-	public OAuthConsumer getConsumer() {
+	public CommonsHttpOAuthConsumer getConsumer() {
 		return consumer;
+	}
+	
+	public CommonsHttpOAuthProvider getProvider() {
+		return provider;
 	}
 	
 	public String requestToken(String callbackUrl) throws Exception {
