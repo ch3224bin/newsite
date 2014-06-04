@@ -15,6 +15,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.john_na.common.entity.DaumAPIVo;
+
 
 public class SessionFilter implements Filter{
 
@@ -27,24 +29,54 @@ public class SessionFilter implements Filter{
 		
 		HttpSession session = hr.getSession(false);
 		
-		boolean hasSession = true;
-		/*
+		boolean hasSession = false;
+		boolean hasProfileInfo = false;
+		boolean hasCalendarInfo = false;
 		if(session != null) {
-			Users user = (Users) session.getAttribute("user");
+			DaumAPIVo daumProfileApiVo = (DaumAPIVo) session.getAttribute("daumProfileApiVo");
+			DaumAPIVo daumCalendarApiVo = (DaumAPIVo) session.getAttribute("daumCalendarApiVo");
 			
-			hasSession = (user != null && StringUtils.isNotEmpty(user.getUserId()))
-			|| requestURI.indexOf("/access.do") != -1;
+			hasProfileInfo = daumProfileApiVo != null
+					&& StringUtils.isNotEmpty(daumProfileApiVo.getAccessToken())
+					&& StringUtils.isNotEmpty(daumProfileApiVo.getTokenSecret());
+			hasCalendarInfo = daumCalendarApiVo != null
+					&& StringUtils.isNotEmpty(daumCalendarApiVo.getAccessToken())
+					&& StringUtils.isNotEmpty(daumCalendarApiVo.getTokenSecret());
+			hasSession = hasProfileInfo && hasCalendarInfo;
 			
 		}
-		*/
 		
-		if (requestURI.matches(".+[.]{1}js$|.+[.]{1}css$|.+[.]{1}gif$|.+[.]{1}jpg$|.+[.]{1}png$|.+[.]{1}bmp$|.+[.]{1}ico$") || requestURI.indexOf("/cardMgt.do") > -1 ) {
+		if (requestURI.matches(".+[.]{1}js$|.+[.]{1}css$|.+[.]{1}gif$|.+[.]{1}jpg$|.+[.]{1}png$|.+[.]{1}bmp$|.+[.]{1}ico$") || requestURI.indexOf("/cardMgt.do") > -1 ) 
+		{
 			filterChain.doFilter(request, response);
-		}/*else if(("/".equals(requestURI) || requestURI.indexOf("/index.jsp") != -1) && hasSession) {
-			((HttpServletResponse)response).sendRedirect("/todo.do?method=todolist");
-		}*/else if(hasSession) {
+		}
+		else if (("/".equals(requestURI)
+					|| requestURI.indexOf("/index.jsp") != -1
+					|| requestURI.indexOf("/index.do") != -1
+					|| requestURI.indexOf("/authCal.do") != -1) 
+				&& hasSession)
+		{
+			((HttpServletResponse)response).sendRedirect("/main.do");
+		}
+		else if (("/".equals(requestURI)
+				|| requestURI.indexOf("/index.jsp") != -1
+				|| requestURI.indexOf("/index.do") != -1
+				|| requestURI.indexOf("/authCal.do") != -1) 
+			&& !hasSession)
+		{
+			// /authCal.do로 캘린더인증 시 프로필 인증이 없다면 index로 되돌림
+			if (requestURI.indexOf("/authCal.do") != -1 && !hasProfileInfo) {
+				((HttpServletResponse)response).sendRedirect("/");
+			} else {
+				filterChain.doFilter(request, response);
+			}
+		}
+		else if (hasSession)
+		{
 			filterChain.doFilter(request, response);
-		}else{
+		}
+		else
+		{
 			if(!"/".equals(requestURI) && requestURI.indexOf("/index.jsp") == -1) {
 				request.setAttribute("targetUrl", requestURI + "?" + queryString + paramToString(request));
 			}

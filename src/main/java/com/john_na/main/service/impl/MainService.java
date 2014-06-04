@@ -2,6 +2,7 @@ package com.john_na.main.service.impl;
 
 import javax.inject.Inject;
 
+import org.anyframe.util.ThreadLocalUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,6 @@ import com.john_na.common.api.DaumCalendarService;
 import com.john_na.common.entity.DaumAPIVo;
 import com.john_na.common.entity.DaumCalendarEventVo;
 import com.john_na.common.entity.RecordInProgressVo;
-import com.john_na.common.util.ThreadLocalUtil;
 import com.john_na.main.service.IMainService;
 
 @Transactional(rollbackFor = Exception.class)

@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ import com.john_na.common.entity.DaumCalendarEventVo;
 @Service
 public class DaumCalendarService {
 
+	private final Logger log = Logger.getLogger(DaumCalendarService.class);
+	
 	private final Gson gson = new Gson();
 	private final AuthHttp authHttp = new AuthHttp();
 	
@@ -46,9 +49,17 @@ public class DaumCalendarService {
 	public Collection<DaumCalendarCategoryVo> getCategoryList() throws Exception {
 		DaumApi calendarApi = (DaumApi) ThreadLocalUtil.get("calendarApi");
 
-		String result = authHttp.getHttpGet(apiUrl + "/category/index.json", calendarApi.getConsumer());
-
-		return gson.fromJson(result, new TypeToken<Collection<DaumCalendarCategoryVo>>(){}.getType());
+		String resultMsg = "";
+		Collection<DaumCalendarCategoryVo> resultVo = null;
+		try {
+			resultMsg = authHttp.getHttpGet(apiUrl + "/category/index.json", calendarApi.getConsumer());
+			resultVo = gson.fromJson(resultMsg, new TypeToken<Collection<DaumCalendarCategoryVo>>(){}.getType());
+		} catch (Exception e) {
+			log.debug(resultMsg);
+			throw e;
+		}
+		
+		return resultVo;
 	}
 	
 	public DaumCalendarEventVo createEvent(DaumCalendarEventVo eventVo) throws Exception {
@@ -64,9 +75,18 @@ public class DaumCalendarService {
 		params.add(new BasicNameValuePair("allday", String.valueOf(eventVo.getAllday())));
 		
 		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(params, "UTF-8");
-		String result = authHttp.getHttpPost(apiUrl + "/event/create.json", formEntity, calendarApi.getConsumer());
-
-		return gson.fromJson(result, DaumCalendarEventVo.class);
+		
+		String resultMsg = "";
+		DaumCalendarEventVo resultVo = null;
+		try {
+			resultMsg = authHttp.getHttpPost(apiUrl + "/event/create.json", formEntity, calendarApi.getConsumer());
+			resultVo = gson.fromJson(resultMsg, DaumCalendarEventVo.class);
+		} catch (Exception e) {
+			log.debug(resultMsg);
+			throw e;
+		}
+		
+		return resultVo;
 	}
 	
 	public Collection<DaumCalendarEventVo> getEventList(DaumCalendarEventVo eventVo) throws Exception {
@@ -77,9 +97,18 @@ public class DaumCalendarService {
 		params.add(new BasicNameValuePair("end_at", StringUtils.stripToEmpty(eventVo.getEndAt())));
 		
 		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(params, "UTF-8");
-		String result = authHttp.getHttpPost(apiUrl + "/event/index.json", formEntity, calendarApi.getConsumer());
 		
-		return gson.fromJson(result, new TypeToken<Collection<DaumCalendarEventVo>>(){}.getType());
+		String resultMsg = "";
+		Collection<DaumCalendarEventVo> resultVo = null;
+		try {
+			resultMsg = authHttp.getHttpPost(apiUrl + "/event/index.json", formEntity, calendarApi.getConsumer());
+			resultVo = gson.fromJson(resultMsg, new TypeToken<Collection<DaumCalendarEventVo>>(){}.getType());
+		} catch (Exception e) {
+			log.debug(resultMsg);
+			throw e;
+		}
+		
+		return resultVo;
 	}
 
 }

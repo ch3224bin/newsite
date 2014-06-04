@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import org.anyframe.util.ThreadLocalUtil;
 import org.springframework.stereotype.Service;
 
 import com.john_na.category.service.ICategoryService;
@@ -12,7 +13,6 @@ import com.john_na.common.api.DaumCalendarService;
 import com.john_na.common.entity.DaumAPIVo;
 import com.john_na.common.entity.DaumCalendarCategoryVo;
 import com.john_na.common.entity.DaumCalendarManageVo;
-import com.john_na.common.util.ThreadLocalUtil;
 
 @Service
 public class CategoryService implements ICategoryService {

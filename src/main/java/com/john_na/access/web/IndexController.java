@@ -40,7 +40,7 @@ public class IndexController {
 		
 		// 1. 프로필 인증
 		HttpSession session = request.getSession();
-		DaumAPIVo daumProfileApiVo = (DaumAPIVo) ThreadLocalUtil.get("daumProfileApiVo");
+		DaumAPIVo daumProfileApiVo = (DaumAPIVo) session.getAttribute("daumProfileApiVo");
 		
 		DaumApi profileApi = (DaumApi) session.getAttribute("profileApi");
 		if (profileApi == null) {
@@ -108,7 +108,7 @@ public class IndexController {
 		DaumAPIVo daumProfileVo = (DaumAPIVo) session.getAttribute("daumProfileApiVo");
 		model.addAttribute("daumProfileVo", daumProfileVo);
 		
-		DaumAPIVo daumCalendarApiVo = (DaumAPIVo) ThreadLocalUtil.get("daumCalendarApiVo");
+		DaumAPIVo daumCalendarApiVo = (DaumAPIVo) session.getAttribute("daumCalendarApiVo");
 		
 		DaumApi calendarApi = (DaumApi) session.getAttribute("calendarApi");
 		if (calendarApi == null) {

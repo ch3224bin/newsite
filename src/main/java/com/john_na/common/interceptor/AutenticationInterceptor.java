@@ -4,11 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.anyframe.util.ThreadLocalUtil;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.john_na.common.api.DaumApi;
 import com.john_na.common.entity.DaumAPIVo;
-import com.john_na.common.util.ThreadLocalUtil;
-
 
 public class AutenticationInterceptor extends HandlerInterceptorAdapter  {
 
@@ -25,6 +25,14 @@ public class AutenticationInterceptor extends HandlerInterceptorAdapter  {
 			DaumAPIVo daumProfileVo = (DaumAPIVo) session.getAttribute("daumProfileApiVo");
 			if ( daumProfileVo != null ){
 				ThreadLocalUtil.add("daumProfileApiVo", daumProfileVo);
+			}
+			DaumApi profileApi = (DaumApi) session.getAttribute("profileApi");
+			if ( profileApi != null ) {
+				ThreadLocalUtil.add("profileApi", profileApi);
+			}
+			DaumApi calendarApi = (DaumApi) session.getAttribute("calendarApi");
+			if ( calendarApi != null ) {
+				ThreadLocalUtil.add("calendarApi", calendarApi);
 			}
 		}
 		return super.preHandle(request, response, handler);
