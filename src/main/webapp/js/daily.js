@@ -7,9 +7,14 @@ $("#daily").on("pageinit", function(){
 	};
 	
 	page.model = (function(){
-		var pub = {};
-		
-		
+		var pub = {
+			"prev" : function(data, successCB, failCB) {
+				$.post("/dailyPrev.do", data, successCB, failCB);
+			},
+			"next" : function(data, successCB, failCB) {
+				$.post("/dailyNext.do", data, successCB, failCB);
+			},
+		};
 		
 		pub.init = function() {
 			
@@ -20,10 +25,15 @@ $("#daily").on("pageinit", function(){
 	page.view = (function(){
 		
 		var sel = {
+			"dailyList" : $("#dailyList"),
+			"prev" : $("#prev"),
+			"next" : $("#next")
 		};
 		
 		var pub = {
-			
+			"getDailyList" : sel.dailyList,
+			"getPrev" : sel.prev,
+			"getNext" : sel.next
 		};
 		
 		pub.init = function() {
@@ -32,14 +42,9 @@ $("#daily").on("pageinit", function(){
 	}());
 
 	page.controller = (function(){
-	
-		
 		
 		var pub = {
 		};
-		
-		
-		
 		
 		pub.init = function() {
 			page.model.init();

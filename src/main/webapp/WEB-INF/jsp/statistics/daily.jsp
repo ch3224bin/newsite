@@ -18,7 +18,7 @@
 	
 	<div data-role="main" class="ui-content">
 	<c:if test="${not empty eventList}">
-		<ul data-role="listview" data-inset="true">
+		<ul id="dailyList" data-role="listview" data-inset="true">
 		<c:forEach var="day" items="${eventList}">
 		    <li data-role="list-divider">${day.startAt} <span class="ui-li-count">총 ${day.count}건, ${day.min}분</span></li>
 		    <c:forEach var="event" items="${day.events}">
@@ -35,10 +35,10 @@
 	</div>
 	<div data-role="footer" data-position="fixed">
 		<div class="ui-bar">
-			<a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-l">이전</a>
-        	<a href="#" class="ui-btn ui-btn-icon-right ui-icon-arrow-r">이후</a>
-        	<select data-mini="true" data-inline="true">
-        		<option value="">카테고리선택</option>
+			<a href="#" id="prev" class="ui-btn ui-btn-icon-right ui-icon-arrow-l">이전</a>
+        	<a href="#" id="next" class="ui-btn ui-btn-icon-right ui-icon-arrow-r">이후</a>
+        	<select id="category" data-mini="true" data-inline="true">
+        		<option value="">전체</option>
         	<c:forEach var="item" items="${enabledCategoryList}">
         		<option value="${item.id}">${item.name}</option>
         	</c:forEach>
