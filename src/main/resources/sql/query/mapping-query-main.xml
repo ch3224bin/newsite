@@ -7,8 +7,8 @@
 		<query id="findRecordInProgressByPk">
 			<statement>
 SELECT USER_ID, 
-      TO_CHAR(START_TIME, 'yyyy-mm-dd')||'T'||TO_CHAR(START_TIME, 'HH24:MM:SS') START_TIME,
-      TO_CHAR(SYSDATE, 'yyyy-mm-dd')||'T'||TO_CHAR(SYSDATE, 'HH24:MM:SS') END_TIME,
+      TO_CHAR(START_TIME, 'yyyy-mm-dd')||'T'||TO_CHAR(START_TIME, 'HH24:MI:SS') START_TIME,
+      TO_CHAR(SYSDATE, 'yyyy-mm-dd')||'T'||TO_CHAR(SYSDATE, 'HH24:MI:SS') END_TIME,
       CATEGORY_ID, CATEGORY_NAME,
       TITLE, DESCRIPTION, LOCATION
 FROM RECORD_IN_PROGRESS
