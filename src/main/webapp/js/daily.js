@@ -31,9 +31,9 @@ $("#daily").on("pageinit", function(){
 		};
 		
 		var pub = {
-			"getDailyList" : sel.dailyList,
-			"getPrev" : sel.prev,
-			"getNext" : sel.next
+			"getDailyList" : function() {return sel.dailyList;},
+			"getPrev" : function() {return sel.prev;},
+			"getNext" : function() {return sel.next;}
 		};
 		
 		pub.init = function() {
@@ -43,12 +43,42 @@ $("#daily").on("pageinit", function(){
 
 	page.controller = (function(){
 		
+		var refreshPage = function(data) {
+			/*
+			<li data-role="list-divider">${day.startAt} <span class="ui-li-count">총 ${day.count}건, ${day.min}분</span></li>
+		    <c:forEach var="event" items="${day.events}">
+		    <li>
+		    <h2>${event.categoryName}</h2>
+		    <p><strong>${event.title}</strong></p>
+		    <div style="font-size: 0.8em;font-weight: normal;"><base:wikiMarkup2Html value="${event.description}" /></div>
+		        <p class="ui-li-aside"><strong>${event.min}분</strong>, ${event.startTime} ~ ${event.endTime}</p>
+		    </li>
+			 */
+			page.view.getDailyList().refresh();
+		};
+		
+		var showErrorMsg = function() {
+			alert("error.");
+		};
+		
 		var pub = {
+			"onClickPrev" : function() {
+				page.view.getPrev().on("click", function(){
+					page.model.prev(data, refreshPage, showErrorMsg);
+				});
+			},
+			"onClickNext" : function() {
+				page.view.getNext().on("click", function(){
+					page.model.next(data, refreshPage, showErrorMsg);
+				});
+			}
 		};
 		
 		pub.init = function() {
 			page.model.init();
 			page.view.init();
+			pub.onClickPrev();
+			pub.onClickNext();
 		};
 		
 		return pub;
